@@ -34,4 +34,5 @@ class FullConnectLayer(nn.Module):
             x = self.drop(x)
         x = self.Activate(x)
         return x
+    
 

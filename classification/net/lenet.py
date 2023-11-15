@@ -28,3 +28,4 @@ if __name__ == "__main__":
     data = torch.randn((16,3,28,28))
     out = net(data)
     print(out.shape)
+    
