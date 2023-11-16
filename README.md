@@ -1,8 +1,8 @@
 # 作者
-<font color="yellow">Ricardo</font>
+<font color="blue">Ricardo</font>
 
 # DL
-Deep Learning
+Deep Learning 
 
 # 数据集
 在分类任务里，数据集来自kaggle的catvsdog数据集
