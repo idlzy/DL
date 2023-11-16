@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.nn import Sequential,Conv2d,BatchNorm2d,MaxPool2d,Flatten,ReLU,Softmax,Linear,Dropout
-
+from torch.nn import Sequential,Conv2d,BatchNorm2d,MaxPool2d,Flatten,ReLU,Softmax,Linear,Dropout,Sigmoid
 
 class ConvLayer(nn.Module):
     def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1,downsample=True):
@@ -22,12 +21,19 @@ class ConvLayer(nn.Module):
         return x
     
 class FullConnectLayer(nn.Module):
-    def __init__(self,in_features,out_features,drop_p=0,softmax=False):
+    def __init__(self,in_features,out_features,drop_p=0,output_layer=False):
         super().__init__()
         self.drop_p = drop_p
         self.fc = Linear(in_features=in_features,out_features=out_features)
         self.drop = Dropout(drop_p)
-        self.Activate = Softmax(dim=1) if softmax else ReLU(inplace=True)
+        self.Activate = None
+        if output_layer:
+            if out_features == 2:
+                self.Activate = Sigmoid()
+            else:
+                self.Activate = Softmax(dim=1)
+        else:
+            self.Activate = ReLU(inplace=True)
     def forward(self,x):
         x = self.fc(x)
         if self.drop_p>0:

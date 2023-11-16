@@ -1,4 +1,4 @@
-from baseblock import *
+from net.baseblock import *
 
 class AlexNet(nn.Module):
     def __init__(self, input_size=224,output_size=1000):
@@ -15,7 +15,7 @@ class AlexNet(nn.Module):
         self.FullConnectLayer = Sequential(
             FullConnectLayer(in_features=6*6*256,out_features=4096,drop_p=0.5),
             FullConnectLayer(in_features=4096,out_features=4096,drop_p=0.5),
-            FullConnectLayer(in_features=4096,out_features=output_size,drop_p=0,softmax=True),
+            FullConnectLayer(in_features=4096,out_features=output_size,drop_p=0,output_layer=True),
         )
 
 

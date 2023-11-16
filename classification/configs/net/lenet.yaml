@@ -1,0 +1,12 @@
+# 配置信息
+model_name : "LeNet"
+logs_save_path : "logs"
+
+
+# 配置超参数
+input_size : 32                       # 输入图像尺寸
+EPOCH : 100                           # 迭代次数
+batch_size : 32                       # 批处理数量
+lr : 0.1                              # 初始学习率
+EarlyStop : True                      # 是否采用早停策略
+EarlyStopEpoch : 15                   # 15个epoch后acc还没有提升则停止训练

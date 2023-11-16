@@ -1,4 +1,4 @@
-from baseblock import *
+from net.baseblock import *
 
 
 class LeNet(nn.Module):
@@ -14,7 +14,7 @@ class LeNet(nn.Module):
         self.FullConnectLayer = Sequential(
             FullConnectLayer(in_features=(int(((input_size-4)/2-4)/2)**2)*16,out_features=120),
             FullConnectLayer(in_features=120,out_features=84),
-            FullConnectLayer(in_features=84,out_features=output_size,softmax=True)
+            FullConnectLayer(in_features=84,out_features=output_size,output_layer=True)
         )
     def forward(self,x):
         x = self.ConvLayer(x)
