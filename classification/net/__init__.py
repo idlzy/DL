@@ -14,4 +14,4 @@ from net.vggnet import *
 from net.baseblock import *
 
 
-Net = {"LeNet":LeNet,"AlexNet":AlexNet}
+Net = {"LeNet":LeNet,"AlexNet":AlexNet,"VGGNet":VGGNet16}

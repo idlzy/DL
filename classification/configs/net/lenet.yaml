@@ -1,12 +1,14 @@
-# 配置信息
+# config info
 model_name : "LeNet"
 logs_save_path : "logs"
 
 
-# 配置超参数
-input_size : 32                       # 输入图像尺寸
-EPOCH : 100                           # 迭代次数
-batch_size : 32                       # 批处理数量
-lr : 0.1                              # 初始学习率
-EarlyStop : True                      # 是否采用早停策略
-EarlyStopEpoch : 15                   # 15个epoch后acc还没有提升则停止训练
+# config hyper-parameters
+input_size : 32                       # images input size
+output_size : 2                       # output size (class numbers)
+EPOCH : 100                           # epoch nums
+batch_size : 32                       # batch size numbers
+batch_size_val: 16                    # val batch size numbers
+lr : 0.1                              # init learing rate
+EarlyStop : True                      # Whether to adopt early stop strategy
+EarlyStopEpoch : 15                   # Stop training if accuracy has not improved after 15 epochs

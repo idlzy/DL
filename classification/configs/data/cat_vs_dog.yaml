@@ -1,1 +1,4 @@
 data_path: "data/Classification/dataset_kaggledogvscat"
+split_rate: 0.7
+train_num_workers : 4
+val_num_workers : 1

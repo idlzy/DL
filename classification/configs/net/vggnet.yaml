@@ -1,5 +1,5 @@
 # config info
-model_name : "AlexNet"
+model_name : "VGGNet"
 logs_save_path : "logs"
 
 
