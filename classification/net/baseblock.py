@@ -14,10 +14,11 @@ class ConvLayer(nn.Module):
         self.BatchNorm = BatchNorm2d(num_features=out_channels)
     def forward(self,x):
         x = self.Conv(x)
+        x = self.BatchNorm(x)
         x = self.Activation(x)
         if self.downsample:
             x = self.Maxpool(x)
-        x = self.BatchNorm(x)
+        
         return x
     
 class FullConnectLayer(nn.Module):
@@ -26,19 +27,12 @@ class FullConnectLayer(nn.Module):
         self.drop_p = drop_p
         self.fc = Linear(in_features=in_features,out_features=out_features)
         self.drop = Dropout(drop_p)
-        self.Activate = None
-        if output_layer:
-            if out_features == 2:
-                self.Activate = Sigmoid()
-            else:
-                self.Activate = Softmax(dim=1)
-        else:
-            self.Activate = ReLU(inplace=True)
+        self.Activate = Softmax(dim=1) if output_layer else ReLU()
     def forward(self,x):
         x = self.fc(x)
+        x = self.Activate(x)
         if self.drop_p>0:
             x = self.drop(x)
-        x = self.Activate(x)
         return x
     
 
