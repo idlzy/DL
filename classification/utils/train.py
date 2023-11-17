@@ -1,10 +1,12 @@
 import os
 import sys
+import time
 import yaml
 import tqdm
 import torch
+import datetime
 from torch.utils.data import DataLoader
-
+from torch.utils.tensorboard import SummaryWriter
 if __name__ == "__main__":
     cwd_path = os.getcwd()
     cwd_dir = os.path.split(cwd_path)[-1]
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     from configs.info import log_trian_info
 
     cfg_data_file = "cat_vs_dog.yaml"
-    cfg_net_file = "vggnet.yaml"
+    cfg_net_file = "lenet.yaml"
 
     cfg_data_path = os.path.join("classification/configs/data",cfg_data_file)
     cfg_net_path = os.path.join("classification/configs/net",cfg_net_file)
@@ -32,6 +34,7 @@ if __name__ == "__main__":
 
 
     """=========================  配置信息  ========================="""
+    time_txt_path = "logs/time.txt"
     data_dir = data_cfg["data_path"]
     model_name = net_cfg["model_name"]
     logs_save_path = f"{net_cfg['logs_save_path']}/{model_name}"
@@ -39,6 +42,9 @@ if __name__ == "__main__":
     best_state_save_path = os.path.join(logs_save_path, "best_state.pth")
     if not os.path.exists(logs_save_path):
         os.makedirs(logs_save_path)
+    if not os.path.exists(time_txt_path):
+        file = open(time_txt_path, "w")
+        file.close()
     """============================================================="""
 
     """=========================  配置超参数  ========================="""
@@ -60,6 +66,7 @@ if __name__ == "__main__":
     """==============================================================="""
 
     """=========================  训练配置  ========================="""
+    writer = SummaryWriter(logs_save_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # 设置模型训练设备
     net = Net[model_name](output_size=output_size).to(device)                                     # 实例化Lenet网络，并将网络转移到主训练设备
     loss_f = torch.nn.CrossEntropyLoss()                                   # 定义损失函数为交叉熵损失函数
@@ -86,6 +93,7 @@ if __name__ == "__main__":
     train_loss_list = []
     val_loss_list = []
     best_epoch = 0
+    start_time = time.time()
     for epoch in range(EPOCH):
         torch.cuda.empty_cache()
         """ 进行训练 """
@@ -117,7 +125,9 @@ if __name__ == "__main__":
             epoch_loss += loss.item()
             bar.set_postfix(epoch_loss=epoch_loss, loss=loss.item())
             del loss,data,target
-        train_loss_list.append(epoch_loss/len(train_dataset))
+        train_loss = epoch_loss/len(train_dataset)
+        train_loss_list.append(train_loss)
+        writer.add_scalar("train_loss", train_loss, epoch + 1)
         """ 进行验证 """
         net.eval()  # 关闭梯度计算
         bar2 = tqdm.tqdm(val_dataloader)  # 设置进度条
@@ -141,8 +151,13 @@ if __name__ == "__main__":
             correct = correct + torch.sum(pre == target)
             val_loss += loss.item()
             del loss,data,target
-        val_loss_list.append(val_loss/len(val_dataset))
+
+        val_loss = val_loss/len(val_dataset)
+        val_loss_list.append(val_loss)
         acc = ((correct / len(val_dataset)).item())
+
+        writer.add_scalar("val_acc", acc, epoch + 1)
+        writer.add_scalar("val_loss", val_loss / len(val_dataset), epoch + 1)
         print("acc: ", acc)
         if acc > max(acc_list): 
             """当本次验证的准确度大于历史最大时，更新历史最大值，并保存本次模型"""
@@ -155,3 +170,9 @@ if __name__ == "__main__":
                 """ 满足早停条件后进行停止迭代 """
                 print(f"The accuracy has not improved for over {EarlyStopEpoch} epochs, so, early stop now !")
                 break
+    writer.close()
+    end_time = time.time()
+    last_time = end_time - start_time
+    with open(time_txt_path, "a", encoding="utf-8") as f:
+        text = f"使用模型为{model_name},训练完成于{datetime.datetime.now()}, 用时{last_time}s,最高准确度为{round(max(acc_list), 4) * 100}%\n"
+        f.write(text)
