@@ -12,6 +12,6 @@ from net.lenet import *
 from net.alexnet import *
 from net.vggnet import *
 from net.baseblock import *
+from net.googlenet import *
 
-
-Net = {"LeNet":LeNet,"AlexNet":AlexNet,"VGGNet":VGGNet16}
+Net = {"LeNet":LeNet,"AlexNet":AlexNet,"VGGNet":VGGNet16,"Googlenet":Googlenet}

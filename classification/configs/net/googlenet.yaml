@@ -1,0 +1,14 @@
+# config info
+model_name : "Googlenet"
+logs_save_path : "logs"
+
+
+# config hyper-parameters
+input_size : 224                      # images input size
+output_size : 2                       # output size (class numbers)
+EPOCH : 100                           # epoch nums
+batch_size : 8                        # batch size numbers
+batch_size_val: 4                     # val batch size numbers
+lr : 0.1                              # init learing rate
+EarlyStop : True                      # Whether to adopt early stop strategy
+EarlyStopEpoch : 15                   # Stop training if accuracy has not improved after 15 epochs

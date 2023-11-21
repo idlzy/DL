@@ -20,7 +20,7 @@ if __name__ == "__main__":
     from configs.info import log_trian_info
 
     cfg_data_file = "cat_vs_dog.yaml"
-    cfg_net_file = "lenet.yaml"
+    cfg_net_file = "googlenet.yaml"
 
     cfg_data_path = os.path.join("classification/configs/data",cfg_data_file)
     cfg_net_path = os.path.join("classification/configs/net",cfg_net_file)
@@ -106,11 +106,23 @@ if __name__ == "__main__":
             data = data.to(device)
             target = target.to(device)
 
-            """ 获得网络输出 """
-            output = net(data)
+            
+            if "Googlenet" in model_name:
+                """ 获得网络输出 """
+                output_main,output_aux1,output_aux2 = net(data)
 
-            """ 计算交叉熵损失值 """
-            loss = loss_f(output, target)
+                """ 计算交叉熵损失值 """
+                loss_main = loss_f(output_main, target)
+                loss_aux1 = loss_f(output_aux1, target)
+                loss_aux2 = loss_f(output_aux2, target)
+                loss = loss_main + 0.3*loss_aux1+ 0.3*loss_aux2
+
+            else:
+                """ 获得网络输出 """
+                output = net(data)
+
+                """ 计算交叉熵损失值 """
+                loss = loss_f(output, target)
 
             """ 梯度清零 """
             opt.zero_grad()
