@@ -10,7 +10,7 @@
 - [x] LeNet
 - [x] AlexNet
 - [x] VGGNet
-- [ ] Googlenet
+- [x] Googlenet
 - [ ] ResNet
 - [ ] DenseNet
 - [ ] MoblieNetv1
