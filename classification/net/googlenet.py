@@ -17,7 +17,7 @@ class InceptionBlock(nn.Module):
             MaxPool2d(kernel_size=(3,3),stride=1,padding=1),
             BasicConv2d(in_channels=in_channels,out_channels=out_poolproj,kernel_size=1,stride=1)
         )
-
+        self.BatchNorm = BatchNorm2d(num_features=out_conv1x1+out_conv3x3+out_conv5x5+out_poolproj)
     def forward(self,x):
         x1 = self.Conv1x1Branch(x) 
         # print("x1:",x1.shape)
@@ -28,6 +28,7 @@ class InceptionBlock(nn.Module):
         x4 = self.PoolBranch(x)
         # print("x4:",x4.shape)
         x = torch.cat([x1,x2,x3,x4],dim=1)
+        x = self.BatchNorm(x)
         return x   
 
 class InceptionAux(nn.Module):
