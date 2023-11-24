@@ -81,8 +81,7 @@ python tools/generate_classdic.py -f data/Classification/dataset_kaggledogvscat/
 ```
 
 
-首先确保我们的工作路径需要在DL路径下
-然在我们需要修改对应任务里的configs文件夹下的数据集配置文件如classification/configs/data/cat_vs_dog.yaml文件，设置自己的数据集的data_path和所需分类的类别，类别数量较少时，手动填写即可，当类别很多时，可以使用根目录下tools里的generate_classdic.py脚本来一键生成类别字典
+
 接着配置模型的超参数配置文件，如classification/configs/net/alexnet.yaml里，可设置batch_size,epoch,lr等超参数
 最后，在classification/utils/train.py里修改cfg_data_file变量和cfg_net_file，更改成你需要的配置文件的名称。修改后了之后，直接在终端运行以下命令即可
 
