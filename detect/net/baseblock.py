@@ -4,11 +4,11 @@ from torch.nn import Sequential, Conv2d,  MaxPool2d, Linear, Dropout
 from torch.nn import LocalResponseNorm, Flatten, Sigmoid, ReLU, Softmax, BatchNorm2d
 from torch.nn import AvgPool2d
 class BasicConv2d(nn.Module):
-    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1,bias=True):
+    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1):
         super().__init__()
         if padding==-1:
             padding = (kernel_size-1)//2
-        self.Conv2d = Conv2d(in_channels=in_channels,out_channels=out_channels,kernel_size=kernel_size,stride=stride,padding=padding,bias=bias)
+        self.Conv2d = Conv2d(in_channels=in_channels,out_channels=out_channels,kernel_size=kernel_size,stride=stride,padding=padding)
         self.Activation = ReLU(inplace=True)
     def forward(self,x):
         x = self.Conv2d(x)

@@ -1,4 +1,12 @@
-data_path: "data/Classification/dataset_kaggledogvscat"
-split_rate: 0.7
+BaseDir: "data/Classification/dataset_kaggledogvscat"
+DataDir: "data"                       # This directory is used to store All types of images
+TrainvalDir: "train_val_info"          # This directory is used to store information on training and validation data, you just need to create it or don't care
+
+
+split_rate: 0.8
 train_num_workers : 2
-val_num_workers : 1
+val_num_workers : 2
+
+class_dic:
+  cat: 0
+  dog: 1

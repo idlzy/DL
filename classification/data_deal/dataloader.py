@@ -8,33 +8,28 @@ from torchvision.transforms import Compose,ToPILImage,ToTensor,Resize
 from torch.utils.data import Dataset,DataLoader
 random.seed(2023)
 
-def GetTrainvalDateSet(data_dir,input_size,split_rate=0.7):
-    labels_list = os.listdir(data_dir)
-    image_info_list = []
-    label2num_dic = {i:labels_list.index(i) for i in labels_list}
-    num2label_dic = {value:key for key,value in label2num_dic.items()}
-    for label_name in labels_list:
-        images_path = os.path.join(data_dir,label_name)
-        images_name_list = os.listdir(images_path)
-        for image_name in images_name_list:
-            image_path = os.path.join(images_path,image_name)
-            image_info_list.append({"image_path":image_path,"target":label2num_dic[label_name]})
-    random.shuffle(image_info_list)
-    train_end_idx = int(len(image_info_list)*split_rate)
-    train_dataset = MyDataSet(image_info_list[:train_end_idx],input_size=input_size)
-    val_dataset = MyDataSet(image_info_list[train_end_idx:],input_size=input_size)
+def GetTrainvalDateSet(train_txt,val_txt,input_size):
+    train_dataset = MyDataSet(train_txt,input_size)
+    val_dataset = MyDataSet(val_txt,input_size)
     return train_dataset,val_dataset
 
 class MyDataSet(Dataset):
-    def __init__(self,image_info_list,input_size):
+    def __init__(self,data_txt,input_size):
         super().__init__()
-        self.image_info_list = image_info_list
+        self.image_info_list = self.__loaddata__(data_txt=data_txt)
         self.tf = Compose([
             ToPILImage(),
             Resize([input_size,input_size]),
             ToTensor()
         ])
-
+    def __loaddata__(self,data_txt):
+        images_info_list = []
+        with open(data_txt,"r",encoding="utf-8")as f:
+            data = f.readlines()
+        for info in data:
+            img_path,target = info.split(",")
+            images_info_list.append({"image_path":img_path,"target":int(target)})
+        return images_info_list
     def __len__(self):
         return len(self.image_info_list)
     
@@ -47,7 +42,7 @@ class MyDataSet(Dataset):
 
         return img_data,img_target
 if __name__ == "__main__":
-    td,vd = GetTrainvalDateSet("data/Classification/dataset_kaggledogvscat",224)
+    td,vd = GetTrainvalDateSet("data/Classification/dataset_kaggledogvscat/data",224,{"cat":0,"dog":1})
     i,t = td.__getitem__(0)
 
     print(len(td))

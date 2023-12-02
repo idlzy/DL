@@ -5,10 +5,10 @@ logs_save_path : "logs"
 
 # config hyper-parameters
 input_size : 32                       # images input size
-output_size : 2                       # output size (class numbers)
+class_num : 2                         # output size (class numbers)
 EPOCH : 100                           # epoch nums
 batch_size : 32                       # batch size numbers
 batch_size_val: 16                    # val batch size numbers
-lr : 0.01                              # init learing rate
+lr : 0.01                             # init learing rate
 EarlyStop : True                      # Whether to adopt early stop strategy
 EarlyStopEpoch : 15                   # Stop training if accuracy has not improved after 15 epochs

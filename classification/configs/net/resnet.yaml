@@ -1,5 +1,5 @@
-# config info
-model_name : "VGGNet"
+# config info 
+model_name : "ResNet18"               # model_name: you can select from those [RseNet18 ResNet34 ResNet50 ResNet101 ResNet152]
 logs_save_path : "logs"
 
 
@@ -9,6 +9,6 @@ class_num : 2                         # output size (class numbers)
 EPOCH : 100                           # epoch nums
 batch_size : 8                        # batch size numbers
 batch_size_val: 4                     # val batch size numbers
-lr : 0.01                             # init learing rate
+lr : 0.1                              # init learing rate
 EarlyStop : True                      # Whether to adopt early stop strategy
 EarlyStopEpoch : 15                   # Stop training if accuracy has not improved after 15 epochs
