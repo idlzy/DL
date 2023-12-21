@@ -127,7 +127,7 @@ train_num_workers 和 val_num_works 分别表示 训练集、验证集的数据�
 DataDir表示的目录里存放每个类别的图片
 #### 生成训练集和验证集
 ```shell
-python tools/generate_trainval.py -y classification/configs/data/cat_vs_dog.yaml -m none
+python tools/generate_trainval.py -y classification/configs/dataset/cat_vs_dog.yaml -m none
 ```
 其中 -y 选项为已经写好了类别字典的数据集配置文件，-m 为数据格式。 默认为none，表示是分类数据集，其他可选项有voc、coco等
 划分好了的训练集和验证集将存入使用的数据集配置文件里TrainvalDir所表示的目录下。
@@ -223,7 +223,7 @@ train_num_workers 和 val_num_works 分别表示 训练集、验证集的数据�
 DataDir表示的目录里存放每个类别的图片
 #### 生成训练集和验证集
 ```shell
-python tools/generate_trainval.py -y detect/configs/data/voc.yaml -m voc
+python tools/generate_trainval.py -y detect/configs/dataset/voc.yaml -m voc
 ```
 其中 -y 选项为已经写好了类别字典的数据集配置文件，-m 为数据格式。 默认为none，表示是分类数据集，其他可选项有voc、coco、yolo等
 划分好了的训练集和验证集将存入使用的数据集配置文件里TrainvalDir所表示的目录下。
