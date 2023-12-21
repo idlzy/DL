@@ -8,24 +8,32 @@ import argparse
 import numpy as np
 import lxml.etree as ET
 from collections import Counter
-# voc标注的目标框坐标值转换到yolo标注的目标框坐标值的函数
-def convert(size, box):
-    dw = 1. / size[0]
-    dh = 1. / size[1]
-    x = (box[0] + box[1]) / 2.0
-    y = (box[2] + box[3]) / 2.0
-    w = box[1] - box[0]
-    h = box[3] - box[2]
-    x = x * dw
-    w = w * dw
-    y = y * dh
-    h = h * dh
-    return (x, y, w, h)
+from voc2yolo import convert
+random.seed(2023)
 
 
-def get_annotation(xml_file,class_dic):
+def get_annotation_yolo(txt_file,class_dic):
+    class_dic_inv = {value:key for key,value in class_dic.items()}
+    
+    label = ''
+    cls_list = []
+    with open(txt_file,'r') as f:
+        raw_label_list = f.readlines()
+    
+    for raw_label in raw_label_list:
+        cls_id = int(raw_label.split(' ')[0])
+        cls_list.append(class_dic_inv[cls_id])
+        raw_label = raw_label.strip('\n')
+        
+        label += f',{raw_label}'
+    return label,cls_list
+
+def get_annotation_voc(xml_file,class_dic):
     tree = ET.parse(xml_file)
     root = tree.getroot()
+    size = root.find('size')
+    w = int(size.find('width').text)
+    h = int(size.find('height').text)
     res_list = []
     label = ''
     cls_list = []
@@ -38,7 +46,8 @@ def get_annotation(xml_file,class_dic):
              float(xmlbox.find('xmax').text),
              float(xmlbox.find('ymin').text),
              float(xmlbox.find('ymax').text))
-        res_list.append([cls_id,*b])
+        bb = convert((w, h), b)
+        res_list.append([cls_id,*bb])
     for res in res_list:
         label+=f",{res[0]} {res[1]} {res[2]} {res[3]} {res[4]}"
     return label,cls_list
@@ -55,6 +64,22 @@ def generate_datainfo(opt):
         time.sleep(0.5)
     if opt.mode == "coco":
         print("coco格式的数据集处理等待开放中,可将改写成voc格式......")
+    elif opt.mode == "yolo":
+        data_dir = data_cfg["VOCDIR"]
+        label2num_dic = data_cfg["class_dic"]
+        split_rate = data_cfg["split_rate"]
+        images_dir = os.path.join(data_dir,"JPEGImages")
+        labels_dir = os.path.join(data_dir,"labels")
+        images_name_list = os.listdir(images_dir)
+        for image_name in tqdm.tqdm(images_name_list):
+            image_id,_ = os.path.splitext(image_name)
+            image_path = os.path.join(images_dir,image_name)
+            label_txt_path = os.path.join(labels_dir,image_id+".txt")
+            label,cls_list = get_annotation_yolo(label_txt_path,label2num_dic)
+            image_info_list.append(image_path+label+"\n")
+            res_list.extend(cls_list)
+        train_val_info_path = os.path.join(data_dir,data_cfg["TrainvalDir"])
+
     elif opt.mode == "voc":
         data_dir = data_cfg["VOCDIR"]
         label2num_dic = data_cfg["class_dic"]
@@ -66,7 +91,7 @@ def generate_datainfo(opt):
             image_id,_ = os.path.splitext(image_name)
             image_path = os.path.join(images_dir,image_name)
             label_xml_path = os.path.join(labels_dir,image_id+".xml")
-            label,cls_list = get_annotation(label_xml_path,label2num_dic)
+            label,cls_list = get_annotation_voc(label_xml_path,label2num_dic)
             image_info_list.append(image_path+label+"\n")
             res_list.extend(cls_list)
         train_val_info_path = os.path.join(data_dir,data_cfg["TrainvalDir"])
@@ -108,8 +133,8 @@ def generate_datainfo(opt):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="hello")
-    parser.add_argument('-y','--yamlfile',default="classification/configs/data/cat_vs_dog.yaml",type=str, help='input the yaml file name')
-    parser.add_argument('-m','--mode',default="none",choices=["voc","coco","none"],type=str,help='the mode of data')
+    parser.add_argument('-y','--yamlfile',default=r"detect\configs\data\voc.yaml",type=str, help='input the yaml file name')
+    parser.add_argument('-m','--mode',default="yolo",choices=["voc","yolo","coco","none"],type=str,help='the mode of data')
     opt = parser.parse_args()
     generate_datainfo(opt)
     

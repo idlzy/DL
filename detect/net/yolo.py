@@ -71,6 +71,10 @@ class YOLO(nn.Module):
         x = torch.reshape(x,[-1,self.S,self.S,self.B*5+self.C])
 
         if self.Softmax:
+            """
+            conf_b x y w h   obj_c
+            [0:2  2:10     10:30 ]
+            """
             x_c = x[:,:,:,0:self.B]
             x_xywh = x[:,:,:,self.B:5*self.B]
             x_cls_obj = x[:,:,:,self.B*5:]

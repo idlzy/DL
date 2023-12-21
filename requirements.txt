@@ -1,4 +1,11 @@
+lxml==4.9.3
 numpy==1.24.4
 opencv_contrib_python==4.8.1.78
+opencv_python==4.8.1.78
+PyQt5==5.15.10
+PyQt5_sip==12.13.0
+PyYAML==6.0.1
 torch==2.1.0+cu121
+torchsummary==1.5.1
+torchvision==0.16.0+cu121
 tqdm==4.66.1

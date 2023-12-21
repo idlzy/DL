@@ -1,12 +1,10 @@
 import os
 import cv2
 import torch
-import random
 import numpy as np
-import torchvision
 from torchvision.transforms import Compose,ToPILImage,ToTensor,Resize
-from torch.utils.data import Dataset,DataLoader
-random.seed(2023)
+from torch.utils.data import Dataset
+
 
 def GetTrainvalDateSet(train_txt,val_txt,input_size):
     train_dataset = MyDataSet(train_txt,input_size)

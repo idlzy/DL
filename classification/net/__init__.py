@@ -8,12 +8,14 @@ if cwd_dir != "DL":
     sys.exit()
 else:
     sys.path.append(os.path.join(os.getcwd(),"classification"))
-from net.lenet import *
-from net.alexnet import *
-from net.vggnet import *
-from net.baseblock import *
-from net.googlenet import *
-from net.resnet import *
+from net.lenet import LeNet
+from net.alexnet import AlexNet
+from net.vggnet import VGGNet16
+from net.googlenet import Googlenet
+from net.resnet import ResNet18,ResNet34,ResNet50,ResNet101,ResNet152
+from net.mobilenet import MobileNet
+from net.xception import Xception
+
 Net = {"LeNet":LeNet,
        "AlexNet":AlexNet,
        "VGGNet":VGGNet16,
@@ -23,4 +25,6 @@ Net = {"LeNet":LeNet,
        "ResNet50":ResNet50,
        "ResNet101":ResNet101,
        "ResNet152":ResNet152,
+       "MobileNet":MobileNet,
+       "Xception":Xception,
        }

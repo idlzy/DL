@@ -1,14 +1,14 @@
 # config info
-model_name : "YOLO"
+model_name : "Xception"
 logs_save_path : "logs"
 
 
 # config hyper-parameters
-input_size : 448                      # images input size
-class_num : 20                        # output size (class numbers)
+input_size : 299                      # images input size
+class_num : 2                         # output size (class numbers)
 EPOCH : 100                           # epoch nums
-batch_size : 2                        # batch size numbers
-batch_size_val: 1                     # val batch size numbers
+batch_size : 4                        # batch size numbers
+batch_size_val: 4                     # val batch size numbers
 lr : 0.01                             # init learing rate
 EarlyStop : True                      # Whether to adopt early stop strategy
 EarlyStopEpoch : 15                   # Stop training if accuracy has not improved after 15 epochs

@@ -17,12 +17,12 @@ class BasicConv2d(nn.Module):
 
 
 class ConvLayer(nn.Module):
-    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1,downsample=True):
+    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1,downsample=True,bias=False):
         super().__init__()
         self.downsample = downsample
         if padding==-1:
             padding = (kernel_size-1)//2
-        self.Conv = Conv2d(in_channels=in_channels,out_channels=out_channels,kernel_size=kernel_size,stride=stride,padding=padding)
+        self.Conv = Conv2d(in_channels=in_channels,out_channels=out_channels,kernel_size=kernel_size,stride=stride,padding=padding,bias=bias)
         self.Activation = ReLU(inplace=True)
         self.Maxpool = MaxPool2d(kernel_size=(2,2))
         self.BatchNorm = BatchNorm2d(num_features=out_channels)

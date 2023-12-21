@@ -60,6 +60,7 @@ if __name__ == "__main__":
     logs_save_path = f"{net_cfg['logs_save_path']}/{model_name}"
     best_model_save_path = os.path.join(logs_save_path, "best_model.pt")
     best_state_save_path = os.path.join(logs_save_path, "best_state.pth")
+    save_infer_path = os.path.join(logs_save_path,"infer.yaml")
     if not os.path.exists(logs_save_path):
         os.makedirs(logs_save_path)
     if not os.path.exists(time_txt_path):
@@ -123,7 +124,7 @@ if __name__ == "__main__":
             """ 将数据转移到训练设备上 """
             data = data.to(device)
             target = target.to(device)
-
+            
             
             if "Googlenet" in model_name:
                 """ 获得网络输出 """
@@ -206,3 +207,17 @@ if __name__ == "__main__":
     with open(time_txt_path, "a", encoding="utf-8") as f:
         text = f"使用模型为{model_name},训练完成于{datetime.datetime.now()}, 用时{last_time}s,最高准确度为{round(max(acc_list), 4) * 100}%\n"
         f.write(text)
+
+    """
+    to save infer yaml which you can use when infer.
+    """
+    label2num_dic = data_cfg["class_dic"]
+    num2label_dic = {value:key for key,value in label2num_dic.items()}
+    save_infer_data = {
+        "model_path":os.path.join(cwd_path,best_model_save_path),
+        "num2label":num2label_dic,
+        "input_size":input_size
+    }
+    with open(save_infer_path,"w",encoding="utf-8") as f:
+        yaml.dump(save_infer_data,f)
+    
