@@ -133,7 +133,7 @@ def generate_datainfo(opt):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="hello")
-    parser.add_argument('-y','--yamlfile',default=r"detect\configs\data\voc.yaml",type=str, help='input the yaml file name')
+    parser.add_argument('-y','--yamlfile',default=r"detect\configs\dataset\voc.yaml",type=str, help='input the yaml file name')
     parser.add_argument('-m','--mode',default="yolo",choices=["voc","yolo","coco","none"],type=str,help='the mode of data')
     opt = parser.parse_args()
     generate_datainfo(opt)

@@ -1,0 +1,14 @@
+BaseDir: "C:/Users/14376/Desktop/RIO/fine/res/trainline"
+DataDir: "data"                       # This directory is used to store All types of images
+TrainvalDir: "train_val_info"          # This directory is used to store information on training and validation data, you just need to create it or don't care
+
+
+split_rate: 0.8
+train_num_workers : 2
+val_num_workers : 2
+
+class_dic:
+  left: 0
+  noturn: 1
+  right: 2
+  wait: 3

@@ -1,0 +1,27 @@
+VOCDIR: "data/ObjectDetection/VOC2007"
+TrainvalDir: "train_val_info"          # This directory is used to store information on training and validation data, you just need to create it or don't care it
+split_rate: 0.8
+train_num_workers : 4
+val_num_workers : 4
+
+class_dic:
+  dog: 0
+  person: 1
+  train: 2
+  sofa: 3
+  chair: 4
+  car: 5
+  pottedplant: 6
+  diningtable: 7
+  horse: 8
+  cat: 9
+  cow: 10
+  bus: 11
+  bicycle: 12
+  aeroplane: 13
+  motorbike: 14
+  tvmonitor: 15
+  bird: 16
+  bottle: 17
+  boat: 18
+  sheep: 19

@@ -37,7 +37,7 @@ if __name__ == "__main__":
     cfg_net_file = opt.netyaml
 
     if opt.own=="false":
-        cfg_data_path = os.path.join("classification/configs/data",cfg_data_file)
+        cfg_data_path = os.path.join("classification/configs/dataset",cfg_data_file)
         cfg_net_path = os.path.join("classification/configs/net",cfg_net_file)
     else:
         cfg_data_path = cfg_data_file
