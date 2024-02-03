@@ -25,7 +25,7 @@ DL为Deep learning的简称。深度学习近年来在计算机视觉，自然�
 - [x] ResNet
 - [x] MoblieNetv1
 - [x] Xception
-- [ ] DenseNet
+- [x] DenseNet
 - [ ] ShuffleNet
 - [ ] MoblieNetv2
 - [ ] EfficientNet
