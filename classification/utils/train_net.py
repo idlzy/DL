@@ -14,19 +14,20 @@ if cwd_dir != "DL":
     print("please work at directory 'DL' before start training")
     sys.exit()
 else:
-    sys.path.append(os.path.join(os.getcwd(),"detect"))
+    sys.path.append(os.path.join(os.getcwd(),"classification"))
 from net import *
 from data_deal.dataloader import *
-from configs.info import log_trian_info
-from lossfunction.yolo_loss import YOLOV1Loss
 import utils
+from configs.info import log_trian_info
+
+
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="hello")
-    parser.add_argument('-d','--datayaml',default="voc.yaml",type=str, help='input the data yaml file name')
-    parser.add_argument('-n','--netyaml',default="yolo.yaml",type=str,help='input the net yaml file name')
+    parser.add_argument('-d','--datayaml',default="cat_vs_dog.yaml",type=str, help='input the data yaml file name')
+    parser.add_argument('-n','--netyaml',default="resnet.yaml",type=str,help='input the net yaml file name')
 
     parser.add_argument('-o','--own',default="false",choices=["true","false"] ,type=str,help='input the net yaml file name')
 
@@ -36,8 +37,8 @@ if __name__ == "__main__":
     cfg_net_file = opt.netyaml
 
     if opt.own=="false":
-        cfg_data_path = os.path.join("detect/configs/dataset",cfg_data_file)
-        cfg_net_path = os.path.join("detect/configs/net",cfg_net_file)
+        cfg_data_path = os.path.join("classification/configs/dataset",cfg_data_file)
+        cfg_net_path = os.path.join("classification/configs/net",cfg_net_file)
     else:
         cfg_data_path = cfg_data_file
         cfg_net_path = cfg_net_file
@@ -53,8 +54,8 @@ if __name__ == "__main__":
     """=========================  配置信息  ========================="""
     utils.seed_everything()
     time_txt_path = "logs/time.txt"
-    train_txt = os.path.join(os.path.join(data_cfg["VOCDIR"],data_cfg["TrainvalDir"]),"train.txt")
-    val_txt = os.path.join(os.path.join(data_cfg["VOCDIR"],data_cfg["TrainvalDir"]),"val.txt")
+    train_txt = os.path.join(os.path.join(data_cfg["BaseDir"],data_cfg["TrainvalDir"]),"train.txt")
+    val_txt = os.path.join(os.path.join(data_cfg["BaseDir"],data_cfg["TrainvalDir"]),"val.txt")
     model_name = net_cfg["model_name"]
     logs_save_path = f"{net_cfg['logs_save_path']}/{model_name}"
     best_model_save_path = os.path.join(logs_save_path, "best_model.pt")
@@ -87,9 +88,9 @@ if __name__ == "__main__":
     """=========================  训练配置  ========================="""
     writer = SummaryWriter(logs_save_path)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # 设置模型训练设备
-    net = Net[model_name](class_num=class_num).to(device)                # 实例化网络，并将网络转移到主训练设备
-    loss_f = YOLOV1Loss()                                                  # 定义损失函数为YOLOv1损失函数
-    opt = torch.optim.SGD(net.parameters(), lr=lr,momentum=0.9,weight_decay=0.0005)                         # 采用SGD优化策略
+    net = Net[model_name](output_size=class_num).to(device)                # 实例化网络，并将网络转移到主训练设备
+    loss_f = torch.nn.CrossEntropyLoss()                                   # 定义损失函数为交叉熵损失函数
+    opt = torch.optim.SGD(net.parameters(), lr=lr)                         # 采用SGD优化策略
     """=============================================================="""
 
     """=========================  输出信息  ========================="""
@@ -106,7 +107,7 @@ if __name__ == "__main__":
                     })
     """=============================================================="""
 
-    
+    acc_list = [0]
     train_loss_list = []
     val_loss_list = []
     best_epoch = 0
@@ -125,12 +126,22 @@ if __name__ == "__main__":
             target = target.to(device)
             
             
-        
-            """ 获得网络输出 """
-            output = net(data)
+            if "Googlenet" in model_name:
+                """ 获得网络输出 """
+                output_main,output_aux1,output_aux2 = net(data)
 
-            """ 计算损失值 """
-            loss = loss_f(output, target)
+                """ 计算交叉熵损失值 """
+                loss_main = loss_f(output_main, target)
+                loss_aux1 = loss_f(output_aux1, target)
+                loss_aux2 = loss_f(output_aux2, target)
+                loss = loss_main + 0.3*loss_aux1+ 0.3*loss_aux2
+
+            else:
+                """ 获得网络输出 """
+                output = net(data)
+
+                """ 计算交叉熵损失值 """
+                loss = loss_f(output, target)
 
             """ 梯度清零 """
             opt.zero_grad()
@@ -162,27 +173,31 @@ if __name__ == "__main__":
             """ 获得网络输出 """
             output = net(data)
             
-            """ 计算损失值 """
+            """ 计算交叉熵损失值 """
             loss = loss_f(output, target)
-            
+
+            _, pre = torch.max(output, 1)
+
+            """ 计算正确分类的数量 """
+            correct = correct + torch.sum(pre == target)
             val_loss += loss.item()
             del loss,data,target
 
         val_loss = val_loss/len(val_dataset)
         val_loss_list.append(val_loss)
-        
+        acc = ((correct / len(val_dataset)).item())
 
-        
+        writer.add_scalar("val_acc", acc, epoch + 1)
         writer.add_scalar("val_loss", val_loss / len(val_dataset), epoch + 1)
-        
-        if val_loss <= min(val_loss_list): 
-            """当本次验证的损失值小于历史最小值时，保存本次模型"""
+        print("acc: ", acc)
+        if acc > max(acc_list): 
+            """当本次验证的准确度大于历史最大时，更新历史最大值，并保存本次模型"""
             torch.save(net, best_model_save_path)
             torch.save(net.state_dict(), best_state_save_path)
-            print(f"Have saved the best model with loss of {round(val_loss, 4)} to {best_model_save_path} ...")
+            print(f"Have saved the best model with acc of {round(acc, 4) * 100}% to {best_model_save_path} ...")
             best_epoch = epoch
-        
-        if EarlyStop and epoch-best_epoch>=EarlyStopEpoch:
+        acc_list.append(acc)
+        if EarlyStop and epoch-best_epoch>=EarlyStopEpoch and max(acc_list)>0.9:
                 """ 满足早停条件后进行停止迭代 """
                 print(f"The accuracy has not improved for over {EarlyStopEpoch} epochs, so, early stop now !")
                 break
@@ -190,7 +205,7 @@ if __name__ == "__main__":
     end_time = time.time()
     last_time = end_time - start_time
     with open(time_txt_path, "a", encoding="utf-8") as f:
-        text = f"使用模型为{model_name},训练完成于{datetime.datetime.now()}, 用时{last_time}s,最低损伤值为{round(min(val_loss_list), 4) * 100}%\n"
+        text = f"使用模型为{model_name},训练完成于{datetime.datetime.now()}, 用时{last_time}s,最高准确度为{round(max(acc_list), 4) * 100}%\n"
         f.write(text)
 
     """

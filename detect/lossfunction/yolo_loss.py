@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+
+
+
 class YOLOV1Loss(nn.Module):
     def __init__(self,coord=5,noobj=0.5,S=7,B=2,C=20,device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
         super().__init__()
@@ -53,8 +56,10 @@ class YOLOV1Loss(nn.Module):
 
 
 if __name__ == "__main__":
-    input = torch.randn((64,7,7,30))
-    target = torch.randn((64,7,7,30))
+    input = torch.zeros((1,7,7,30))
+    target = torch.zeros((1,7,7,30))
+    target[0,3,3,:6] = torch.tensor([1,0,0.5,0.5,0.3,0.3])
+    input[0,3,3,:6] = torch.tensor([1,0,0.5,0.5,0.2,0.4])
     loss_fc = YOLOV1Loss()
     loss = loss_fc(input,target)
     print(loss)

@@ -1,5 +1,5 @@
 # config info
-model_name : "VGGNet"
+model_name : "DenseNet121"            # model_name: you can select from those [DenseNet121 DenseNet169 DenseNet201 DenseNet264]
 logs_save_path : "logs"
 
 

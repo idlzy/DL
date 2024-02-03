@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import Sequential, Conv2d,  MaxPool2d, Linear, Dropout
 from torch.nn import LocalResponseNorm, Flatten, Sigmoid, ReLU, Softmax, BatchNorm2d
-from torch.nn import AvgPool2d
+from torch.nn import AvgPool2d,AdaptiveAvgPool2d
 class BasicConv2d(nn.Module):
     def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=-1,bias=True):
         super().__init__()

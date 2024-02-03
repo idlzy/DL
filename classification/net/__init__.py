@@ -15,7 +15,7 @@ from net.googlenet import Googlenet
 from net.resnet import ResNet18,ResNet34,ResNet50,ResNet101,ResNet152
 from net.mobilenet import MobileNet
 from net.xception import Xception
-
+from net.densenet import DenseNet121,DenseNet169,DenseNet201,DenseNet264
 Net = {"LeNet":LeNet,
        "AlexNet":AlexNet,
        "VGGNet":VGGNet16,
@@ -27,4 +27,8 @@ Net = {"LeNet":LeNet,
        "ResNet152":ResNet152,
        "MobileNet":MobileNet,
        "Xception":Xception,
+       "DenseNet121":DenseNet121,
+       "DenseNet169":DenseNet169,
+       "DenseNet201":DenseNet201,
+       "DenseNet264":DenseNet264,
        }

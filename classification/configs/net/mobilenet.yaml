@@ -5,8 +5,8 @@ logs_save_path : "logs"
 
 # config hyper-parameters
 input_size : 224                      # images input size
-class_num : 2                         # output size (class numbers)
-EPOCH : 100                           # epoch nums
+class_num : 4                         # output size (class numbers)
+EPOCH : 10                            # epoch nums
 batch_size : 8                        # batch size numbers
 batch_size_val: 4                     # val batch size numbers
 lr : 0.01                             # init learing rate

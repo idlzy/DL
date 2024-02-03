@@ -58,14 +58,14 @@ class VOC2YOLO():
         with open(class_txt,"w",encoding='utf-8')as f:
             for i in range(len(num2label)):
                 f.write(num2label[i]+'\n')
-                
-parser = argparse.ArgumentParser(description="hello")
-parser.add_argument('-d','--datayaml',default="detect/configs/data/voc.yaml",type=str, help='input the data yaml file name')
-opt = parser.parse_args()
-with open(opt.datayaml,'r')as f:
-    data_cfg = yaml.safe_load(f)
-voc_folder = os.path.join(data_cfg['VOCDIR'],"Annotations")
-yolo_folder = os.path.join(data_cfg['VOCDIR'],"labels")
-label2num_dic = data_cfg["class_dic"]
-woker = VOC2YOLO(voc_folder=voc_folder,yolo_folder=yolo_folder,label2num_dic=label2num_dic)
-woker.run()
+if __name__ == "__main__":       
+    parser = argparse.ArgumentParser(description="hello")
+    parser.add_argument('-d','--datayaml',default="detect/configs/data/voc.yaml",type=str, help='input the data yaml file name')
+    opt = parser.parse_args()
+    with open(opt.datayaml,'r')as f:
+        data_cfg = yaml.safe_load(f)
+    voc_folder = os.path.join(data_cfg['VOCDIR'],"Annotations")
+    yolo_folder = os.path.join(data_cfg['VOCDIR'],"labels")
+    label2num_dic = data_cfg["class_dic"]
+    woker = VOC2YOLO(voc_folder=voc_folder,yolo_folder=yolo_folder,label2num_dic=label2num_dic)
+    woker.run()
